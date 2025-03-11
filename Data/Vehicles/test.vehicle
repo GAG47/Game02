@@ -1,0 +1,33 @@
+{
+    "version": "0.0.1",
+    "name": "test",
+    "parts": [
+        {
+            "id": 1,
+            "prefabName": "Cube",
+            "partTargetId": 0,
+            "rootJoint": 0,
+            "constraintJoint": 2,
+            "angle": 0.0,
+            "properties": []
+        },
+        {
+            "id": 2,
+            "prefabName": "Cube",
+            "partTargetId": 0,
+            "rootJoint": 0,
+            "constraintJoint": 0,
+            "angle": 0.0,
+            "properties": []
+        },
+        {
+            "id": 3,
+            "prefabName": "Cube",
+            "partTargetId": 0,
+            "rootJoint": 0,
+            "constraintJoint": 5,
+            "angle": 0.0,
+            "properties": []
+        }
+    ]
+}

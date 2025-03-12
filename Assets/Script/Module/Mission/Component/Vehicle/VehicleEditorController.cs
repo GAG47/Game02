@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Data;
 using UnityEngine.Rendering;
 using UnityEditor.Experimental.GraphView;
+using Unity.VisualScripting;
 
 public class VehicleEditorController : MonoBehaviour
 {

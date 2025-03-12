@@ -39,9 +39,9 @@ public class Part : MonoBehaviour
 
     public UnityEvent onDestroy = new UnityEvent(); //毁坏事件
 
-    public Vector3 OriDirection; //零件的初始方向
-    public Vector3 CurDirection; //零件的当前方向
-    public UnityEvent<Vector3> onRelativePositionChange = new UnityEvent<Vector3>(); //方向改变事件
+    public Quaternion originRotation; //零件的初始方向
+    public Quaternion currentRotation; //零件的当前方向
+    public UnityEvent<Transform> onRelativePositionChange = new UnityEvent<Transform>(); //方向改变事件
 
     protected virtual void Awake()
     {
@@ -66,8 +66,8 @@ public class Part : MonoBehaviour
         isSelected = false;
 
         //设置零件的初始方向
-        OriDirection = transform.forward;
-        CurDirection = OriDirection;
+        originRotation = transform.rotation;
+        currentRotation = originRotation;
     }
 
     //设置根部关节（跟关节所在零件毁坏则脱离）
@@ -104,13 +104,15 @@ public class Part : MonoBehaviour
             {
                 return;
             }
-            parObj.onRelativePositionChange.AddListener((parForward) =>
+            parObj.onRelativePositionChange.AddListener((parentTransform) =>
             {
-                this.CurDirection = parForward;
-                //this.transform.forward = parForward;
-                this.transform.rotation = Quaternion.LookRotation(parForward, Vector3.up);
-                this.onRelativePositionChange.Invoke(parForward);
-                //obj.transform.position = parObj.transform.position - parForward * (obj.transform.localScale.y / 2 + parObj.transform.localScale.y / 2);
+                Vector3 localPos = parentTransform.InverseTransformPoint(transform.position);
+                Debug.Log(localPos);
+                Vector3 newWorldPos = parentTransform.TransformPoint(localPos);
+                transform.position = newWorldPos;
+                transform.rotation = parentTransform.rotation;
+
+                onRelativePositionChange.Invoke(transform);
             });
         }
     }

@@ -1,124 +1,123 @@
 {
     "version": "0.0.1",
-    "name": "小车测试3",
+    "name": "轮子检测测试",
     "parts": [
         {
             "id": 1,
-            "prefabName": "Cube",
+            "prefabName": "Wheel",
+            "partTargetId": 0,
+            "rootJoint": 0,
+            "constraintJoint": 2,
+            "angle": 0.0,
+            "properties": [
+                {
+                    "type": 3,
+                    "keyValue": 0,
+                    "floatValue": 0.0,
+                    "boolValue": false
+                },
+                {
+                    "type": 3,
+                    "keyValue": 0,
+                    "floatValue": 0.0,
+                    "boolValue": false
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "prefabName": "Wheel",
+            "partTargetId": 0,
+            "rootJoint": 0,
+            "constraintJoint": 5,
+            "angle": 0.0,
+            "properties": [
+                {
+                    "type": 3,
+                    "keyValue": 0,
+                    "floatValue": 0.0,
+                    "boolValue": false
+                },
+                {
+                    "type": 3,
+                    "keyValue": 0,
+                    "floatValue": 0.0,
+                    "boolValue": false
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "prefabName": "Wheel",
             "partTargetId": 0,
             "rootJoint": 0,
             "constraintJoint": 0,
             "angle": 0.0,
-            "properties": []
-        },
-        {
-            "id": 2,
-            "prefabName": "Cube",
-            "partTargetId": 1,
-            "rootJoint": 0,
-            "constraintJoint": 1,
-            "angle": 0.0,
-            "properties": []
-        },
-        {
-            "id": 3,
-            "prefabName": "Cube",
-            "partTargetId": 2,
-            "rootJoint": 0,
-            "constraintJoint": 1,
-            "angle": 0.0,
-            "properties": []
+            "properties": [
+                {
+                    "type": 3,
+                    "keyValue": 0,
+                    "floatValue": 0.0,
+                    "boolValue": false
+                },
+                {
+                    "type": 3,
+                    "keyValue": 0,
+                    "floatValue": 0.0,
+                    "boolValue": false
+                }
+            ]
         },
         {
             "id": 4,
-            "prefabName": "Cube",
+            "prefabName": "Wheel",
+            "partTargetId": 0,
+            "rootJoint": 0,
+            "constraintJoint": 4,
+            "angle": 0.0,
+            "properties": [
+                {
+                    "type": 3,
+                    "keyValue": 0,
+                    "floatValue": 0.0,
+                    "boolValue": false
+                },
+                {
+                    "type": 3,
+                    "keyValue": 0,
+                    "floatValue": 0.0,
+                    "boolValue": false
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "prefabName": "Wheel",
             "partTargetId": 0,
             "rootJoint": 0,
             "constraintJoint": 1,
             "angle": 0.0,
-            "properties": []
-        },
-        {
-            "id": 5,
-            "prefabName": "Cube",
-            "partTargetId": 4,
-            "rootJoint": 0,
-            "constraintJoint": 1,
-            "angle": 0.0,
-            "properties": []
+            "properties": [
+                {
+                    "type": 3,
+                    "keyValue": 0,
+                    "floatValue": 0.0,
+                    "boolValue": false
+                },
+                {
+                    "type": 3,
+                    "keyValue": 0,
+                    "floatValue": 0.0,
+                    "boolValue": false
+                }
+            ]
         },
         {
             "id": 6,
             "prefabName": "Wheel",
-            "partTargetId": 5,
+            "partTargetId": 0,
             "rootJoint": 0,
-            "constraintJoint": 4,
-            "angle": 0.0,
-            "properties": [
-                {
-                    "type": 3,
-                    "keyValue": 119,
-                    "floatValue": 0.0,
-                    "boolValue": false
-                },
-                {
-                    "type": 3,
-                    "keyValue": 115,
-                    "floatValue": 0.0,
-                    "boolValue": false
-                }
-            ]
-        },
-        {
-            "id": 7,
-            "prefabName": "Wheel",
-            "partTargetId": 5,
-            "rootJoint": 0,
-            "constraintJoint": 5,
-            "angle": 0.0,
-            "properties": [
-                {
-                    "type": 3,
-                    "keyValue": 115,
-                    "floatValue": 0.0,
-                    "boolValue": false
-                },
-                {
-                    "type": 3,
-                    "keyValue": 119,
-                    "floatValue": 0.0,
-                    "boolValue": false
-                }
-            ]
-        },
-        {
-            "id": 8,
-            "prefabName": "Wheel",
-            "partTargetId": 3,
-            "rootJoint": 0,
-            "constraintJoint": 5,
-            "angle": 0.0,
-            "properties": [
-                {
-                    "type": 3,
-                    "keyValue": 0,
-                    "floatValue": 0.0,
-                    "boolValue": false
-                },
-                {
-                    "type": 3,
-                    "keyValue": 0,
-                    "floatValue": 0.0,
-                    "boolValue": false
-                }
-            ]
-        },
-        {
-            "id": 9,
-            "prefabName": "Wheel",
-            "partTargetId": 3,
-            "rootJoint": 0,
-            "constraintJoint": 4,
+            "constraintJoint": 3,
             "angle": 0.0,
             "properties": [
                 {

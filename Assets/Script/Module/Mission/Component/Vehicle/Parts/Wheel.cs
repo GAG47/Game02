@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
+using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEditor.Rendering;
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
@@ -9,16 +12,21 @@ using static UnityEngine.Rendering.HableCurve;
 
 public class Wheel : Part
 {
-    [SerializeField] float power = 50.0f;
-    [SerializeField] float rotationSpeed = 50.0f;
+    [SerializeField] float power = 200.0f;
+    [SerializeField] float rotationSpeed = 200.0f;
     private Rigidbody rb;
     private Transform wheelMod;
-    private WheelCollider wheelCol;
 
     Ref<KeyCode> forwardKey = new Ref<KeyCode>(KeyCode.None);
     Ref<KeyCode> backKey = new Ref<KeyCode>(KeyCode.None);
+    bool forward = false;
+    bool back = false;
 
-    private bool isGrounded = false;
+    private Quaternion originRotation;
+
+    [SerializeField] private int rayCount = 36;
+    [SerializeField] private float rayLength = 1.05f;
+    [SerializeField] private Transform detectionCenter;
 
     protected override void Awake()
     {
@@ -27,16 +35,17 @@ public class Wheel : Part
         properties.Add(new Property("后退", backKey));
 
         wheelMod = transform.Find("WheelModel");
-        wheelCol = transform.Find("WheelCollider").GetComponent<WheelCollider>();
+        originRotation = new Quaternion(0, 0, 0, 1);
     }
 
     void Update()
     {
+        CollisionStay();
         if (GameApp.DataManager.mode != Mode.Play)
         {
             wheelMod.localPosition = new Vector3(0, 0.5f, 0);
             wheelMod.localRotation = new Quaternion(0, 0, 0, 1);
-            Debug.Log(wheelMod.position);
+            //Debug.Log(wheelMod.position);
             return;
         }
 
@@ -45,58 +54,91 @@ public class Wheel : Part
 
         if (rb == null)
             rb = transform.parent.GetComponent<Rigidbody>();
-
-
-        //Collider[] colliders = Physics.OverlapSphere(transform.position, 1.1f, LayerMask.GetMask("Ground"), QueryTriggerInteraction.Collide);
-        //isGrounded = (colliders.Length > 0 ? true : false);
-        //if (!isGrounded)
-        //{
-        //    // 使轮子看起来在空中旋转
-        //    // to do
-        //    Debug.Log("空中");
-        //    return;
-        //}
+    
 
 
         if (forwardKey.asValue != KeyCode.None && Input.GetKey(forwardKey.asValue))
         {
-            wheelCol.motorTorque = rotationSpeed;
-
-            //Quaternion rot = wheelMod.rotation;
-            //wheelCol.GetWorldPose(out _, out rot);
-            //wheelMod.rotation = rot; //* Quaternion.Euler(0, 0, 90);
+            forward = true;
+        }
+        else
+        {
+            forward = false;
         }
         if (backKey.asValue != KeyCode.None && Input.GetKey(backKey.asValue))
         {
-            wheelCol.motorTorque = -rotationSpeed;
-
-            //Quaternion rot = wheelMod.rotation;
-            //wheelCol.GetWorldPose(out _, out rot);
-            //wheelMod.rotation = rot; //* Quaternion.Euler(0, 0, 90); 
+            back = true;
+        }
+        else
+        {
+            back = false;
         }
     }
 
-    void OnDrawGizmosSelected()
+    private void CollisionStay()
     {
-        //Color gizmoColor = Color.cyan;
-        //int segments = 32;
-        //Gizmos.color = gizmoColor;
+        //Debug.Log("123");
+        float angleStep = 360f / rayCount;
+        for (int i = 0; i < rayCount; i++)
+        {
+            float angle = i * angleStep;
+            float radian = angle * Mathf.Deg2Rad;
 
-        //Vector3 wheelWorldPos;
-        //Quaternion wheelWorldRot;
-        //wheelCol.GetWorldPose(out wheelWorldPos, out wheelWorldRot);
+            //forward会有问题 更换为四元数
+            //Debug.Log("位置：" + transform.position);
+            //Debug.Log("朝向：" + transform.forward);
+            //Vector3 v1 = originForward, v2 = transform.forward;
+            //Vector3 n = Vector3.Cross(v1, v2).normalized;
+            //float cos_theta = Vector3.Dot(v1.normalized, v2.normalized);
+            //float theta = Mathf.Acos(cos_theta);
+            //Quaternion q = Quaternion.AngleAxis(theta * Mathf.Rad2Deg, n);
+            //Debug.Log("旋转： " + q);
 
-        //float wheelRadius = wheelCol.radius;
+            //获得旋转四元数
+            Quaternion currentRotation = transform.rotation;
+            Quaternion rotationDelta = Quaternion.Inverse(originRotation) * currentRotation;
 
-        //for (int i = 0; i < segments; i++)
-        //{
-        //    float angle1 = i * 2 * Mathf.PI / segments;
-        //    float angle2 = (i + 1) * 2 * Mathf.PI / segments;
+            Vector3 direction = new Vector3(Mathf.Cos(radian), 0, Mathf.Sin(radian));
+            direction = rotationDelta * direction;
+    
+            //射线检测
+            Ray ray = new Ray(detectionCenter.position, direction);
+            RaycastHit hit;
 
-        //    Vector3 point1 = wheelWorldPos + wheelWorldRot * new Vector3(Mathf.Cos(angle1), 0, Mathf.Sin(angle1)) * wheelRadius;
-        //    Vector3 point2 = wheelWorldPos + wheelWorldRot * new Vector3(Mathf.Cos(angle2), 0, Mathf.Sin(angle2)) * wheelRadius;
+            if (Physics.Raycast(ray, out hit, rayLength))
+            {
+                if (GameApp.DataManager.mode == Mode.Play)
+                {
+                    ForceAtPoint(hit.point, -direction);
+                }
+                Debug.DrawLine(ray.origin, hit.point, Color.red);
+                //Debug.Log("射线 " + i + " 击中了物体: " + hit.collider.gameObject.name);
+            }
+            else
+            {
+                Debug.DrawLine(ray.origin, ray.origin + direction * rayLength, Color.green);
+            }
+        }
+    }
+    private void ForceAtPoint(Vector3 pos, Vector3 nor)
+    {
+        Vector3 relativeVector = nor;
+        Quaternion worldYRotation = Quaternion.Euler(0f, -90f, 0f);
+        Quaternion localRotation = transform.rotation * worldYRotation * Quaternion.Inverse(transform.rotation);
+        Vector3 rotatedNor = localRotation * relativeVector;
 
-        //    Gizmos.DrawLine(point1, point2);
-        //}
+        Debug.DrawLine(pos, pos + rotatedNor, Color.green);
+        if (forward)
+        {
+            Debug.Log("forward");
+            //Debug.DrawLine(rotatedNor * power, pos, Color.green);
+            rb.AddForceAtPosition(rotatedNor * power, pos, ForceMode.Force);
+        }
+        if(back)
+        {
+            Debug.Log("back");
+            //Debug.DrawLine(-rotatedNor * power, pos, Color.green);
+            rb.AddForceAtPosition(-rotatedNor * power, pos, ForceMode.Force);
+        }
     }
 }

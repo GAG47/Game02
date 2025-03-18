@@ -105,7 +105,7 @@ public class Wheel : Part
             Ray ray = new Ray(detectionCenter.position, direction);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit, rayLength))
+            if (Physics.Raycast(ray, out hit, rayLength, LayerMask.GetMask("Ground")))
             {
                 if (GameApp.DataManager.mode == Mode.Play)
                 {

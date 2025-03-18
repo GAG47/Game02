@@ -2,44 +2,44 @@ using UnityEngine;
 
 public class RotateWithTorque : MonoBehaviour
 {
-    // 旋转速度，可在Inspector面板中调整
-    public float rotationSpeed = 10f;
+    [Header("目标物体")]
+    public Transform target; // 要跟随的物体A
 
-    // 用于存储Rigidbody组件的引用
-    [SerializeField]private Rigidbody rbParent;
-    private Rigidbody rb;
-    private FixedJoint fj;
+    [Header("跟随设置")]
+    [Tooltip("是否保持初始相对位置")]
+    public bool keepPosition = true;
+
+    [Tooltip("是否保持初始相对旋转")]
+    public bool keepRotation = true;
+
+    // 相对变换参数
+    private Vector3 originPositionOffset;
+    private Quaternion originRotationOffset;
+
     void Start()
     {
-        // 获取当前游戏对象上的Rigidbody组件
-        rb = GetComponent<Rigidbody>();
-        fj = GetComponent<FixedJoint>();
+        if (target == null) return;
+
+        originPositionOffset = target.InverseTransformPoint(transform.position);
+        originRotationOffset = Quaternion.Inverse(target.rotation) * transform.rotation;
+        Debug.Log(originPositionOffset + " " + originRotationOffset);
     }
 
-    void Update()
+    void LateUpdate()
     {
-        // 检查是否按下W键
-        if (Input.GetKey(KeyCode.W))
-        {
-            // 向前旋转，通过施加绕Y轴正方向的扭矩来实现
-            ApplyTorque(Vector3.right);
-        }
-        // 检查是否按下S键
-        else if (Input.GetKey(KeyCode.S))
-        {
-            // 向后旋转，通过施加绕Y轴负方向的扭矩来实现
-            ApplyTorque(Vector3.left);
-        }
-    }
+        if (target == null) return;
 
-    void ApplyTorque(Vector3 direction)
-    {
-        if (rb != null)
+        // 位置跟随（考虑目标物体的缩放）
+        if (keepPosition)
         {
-            // 计算扭矩值，将旋转速度与方向结合
-            Vector3 torque = direction * rotationSpeed;
-            // 向刚体施加扭矩，使用ForceMode.Force模式
-            rb.AddTorque(torque, ForceMode.Force);
+            transform.position = target.TransformPoint(originPositionOffset);
         }
+
+        // 旋转跟随
+        if (keepRotation)
+        {
+            transform.rotation = target.rotation * originRotationOffset;
+        }
+        Debug.Log("transform:" + transform.position + " " + transform.rotation);
     }
 }

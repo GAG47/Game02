@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEngine.GraphicsBuffer;
+using static UnityEngine.UI.CanvasScaler;
 
 public class Part : MonoBehaviour
 {
@@ -39,8 +41,9 @@ public class Part : MonoBehaviour
 
     public UnityEvent onDestroy = new UnityEvent(); //毁坏事件
 
-    public Quaternion originRotation; //零件的初始方向
-    public Quaternion currentRotation; //零件的当前方向
+    public bool unInit = true; //是否初始化
+    private Vector3 originPositionOffset; //初始方向
+    private Quaternion originRotationOffset; //初始旋转
     public UnityEvent<Transform> onRelativePositionChange = new UnityEvent<Transform>(); //方向改变事件
 
     protected virtual void Awake()
@@ -64,10 +67,6 @@ public class Part : MonoBehaviour
             m_rootJoint = m_joints[0];
         }
         isSelected = false;
-
-        //设置零件的初始方向
-        originRotation = transform.rotation;
-        currentRotation = originRotation;
     }
 
     //设置根部关节（跟关节所在零件毁坏则脱离）
@@ -104,14 +103,24 @@ public class Part : MonoBehaviour
             {
                 return;
             }
-            parObj.onRelativePositionChange.AddListener((parentTransform) =>
+            unInit = true;
+            parObj.onRelativePositionChange.AddListener((target) =>
             {
-                Vector3 localPos = parentTransform.InverseTransformPoint(transform.position);
-                Debug.Log(localPos);
-                Vector3 newWorldPos = parentTransform.TransformPoint(localPos);
-                transform.position = newWorldPos;
-                transform.rotation = parentTransform.rotation;
+                if(this.unInit)
+                {
+                    this.unInit = false;
+                    Debug.Log("target: "+target.position + " " + transform.position);
+                    originPositionOffset = target.InverseTransformPoint(transform.position);
+                    originRotationOffset = Quaternion.Inverse(target.rotation) * transform.rotation;
+                }
+                 Debug.Log("RelativePositionChange " + originPositionOffset + " " + originRotationOffset);
 
+
+                //位置跟随（考虑目标物体的缩放）
+                transform.position = target.TransformPoint(originPositionOffset);
+                transform.rotation = target.rotation * originRotationOffset;
+
+                //迭代传递
                 onRelativePositionChange.Invoke(transform);
             });
         }

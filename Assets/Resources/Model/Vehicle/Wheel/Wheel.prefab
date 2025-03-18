@@ -462,8 +462,8 @@ MonoBehaviour:
   onRelativePositionChange:
     m_PersistentCalls:
       m_Calls: []
-  power: 20
-  rotationSpeed: 2
+  power: 150
+  rotationSpeed: 20
   rayCount: 36
   rayLength: 1.05
   detectionCenter: {fileID: 2864772018173951947}

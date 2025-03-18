@@ -266,6 +266,10 @@ MonoBehaviour:
   onDestroy:
     m_PersistentCalls:
       m_Calls: []
+  unInit: 1
+  onRelativePositionChange:
+    m_PersistentCalls:
+      m_Calls: []
   leftAngleSide: 60
   rightAngleSide: 60
   rotateSpeed: 20

@@ -40,8 +40,12 @@ public class Hitch : Part
         {
             rotateY -= rotateSpeed * Time.deltaTime;
             movablePart.Rotate(0f, -rotateSpeed * Time.deltaTime, 0f, Space.Self);
-            onRelativePositionChange.Invoke(transform);
-            transform.parent.GetComponent<VehicleEditorController>().ComputeCenterOfMass();
+
+            Transform tmp = movablePart;
+            //tmp.position = transform.position;
+            onRelativePositionChange.Invoke(tmp);
+
+            transform.parent.GetComponent<VehicleEditorController>().ComputeCenterOfMass(); //重新计算质心
         }
 
         bool rightRotate = false;
@@ -53,7 +57,11 @@ public class Hitch : Part
         {
             rotateY += rotateSpeed * Time.deltaTime;
             movablePart.Rotate(0f, rotateSpeed * Time.deltaTime, 0f, Space.Self);
-            onRelativePositionChange.Invoke(transform);
+            
+            Transform tmp = movablePart;
+            //tmp.position = transform.position;
+            onRelativePositionChange.Invoke(tmp);
+            
             transform.parent.GetComponent<VehicleEditorController>().ComputeCenterOfMass();
         }
     }

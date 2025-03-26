@@ -110,6 +110,7 @@ public class Wheel : Part
                 if (GameApp.DataManager.mode == Mode.Play)
                 {
                     ForceAtPoint(hit.point, -direction);
+                    //Debug.Log("车轮摩擦力方向： "+-direction);
                 }
                 Debug.DrawLine(ray.origin, hit.point, Color.red);
                 //Debug.Log("射线 " + i + " 击中了物体: " + hit.collider.gameObject.name);

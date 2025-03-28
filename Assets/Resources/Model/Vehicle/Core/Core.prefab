@@ -132,6 +132,10 @@ MonoBehaviour:
   onDestroy:
     m_PersistentCalls:
       m_Calls: []
+  unInit: 1
+  onRelativePositionChange:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1183942595286671114
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,21 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.Rendering;
 using UnityEngine;
-using static UnityEngine.ParticleSystem;
-using static UnityEngine.Rendering.HableCurve;
 
-public class Wheel : Part
+public class Wheel : Cube
 {
     [SerializeField] float power = 200.0f;
     [SerializeField] float rotationSpeed = 200.0f;
     private Rigidbody rb;
     private Transform wheelMod;
+    private bool onGround;
 
     Ref<KeyCode> forwardKey = new Ref<KeyCode>(KeyCode.None);
     Ref<KeyCode> backKey = new Ref<KeyCode>(KeyCode.None);
@@ -36,37 +28,48 @@ public class Wheel : Part
 
         wheelMod = transform.Find("WheelModel");
         originRotation = new Quaternion(0, 0, 0, 1);
+
+        GameApp.DataManager.onModeChange.AddListener(() =>
+        {
+            switch (GameApp.DataManager.mode)
+            {
+                case Mode.Edit:
+                    wheelMod.localPosition = new Vector3(0, 0.5f, 0);
+                    wheelMod.localRotation = new Quaternion(0, 0, 0, 1);
+                    break;
+                case Mode.Play:
+                    break;
+                default:
+                    break;
+            }
+        });
     }
 
     void Update()
     {
-        CollisionStay();
-        if (GameApp.DataManager.mode != Mode.Play)
+        if (transform.parent == null || transform.root.name != "Vehicle")
         {
-            wheelMod.localPosition = new Vector3(0, 0.5f, 0);
-            wheelMod.localRotation = new Quaternion(0, 0, 0, 1);
-            //Debug.Log(wheelMod.position);
+            return;
+        }
+        if (GameApp.DataManager.mode != Mode.Play || isLinkedCore == false)
+        {
             return;
         }
 
-        if (transform.parent == null || transform.root.name != "Vehicle")
-            return;
-
-        if (rb == null)
-            rb = transform.parent.GetComponent<Rigidbody>();
-    
-
-
-        if (forwardKey.asValue != KeyCode.None && Input.GetKey(forwardKey.asValue))
+        CollisionStay();
+        //前进/后退
+        if (forwardKey.asValue != KeyCode.None && Input.GetKey(forwardKey.asValue) && this.isLinkedCore)
         {
+            m_rigidbody.AddTorque(transform.up * rotationSpeed);
             forward = true;
         }
         else
         {
             forward = false;
         }
-        if (backKey.asValue != KeyCode.None && Input.GetKey(backKey.asValue))
+        if (backKey.asValue != KeyCode.None && Input.GetKey(backKey.asValue) && this.isLinkedCore)
         {
+            m_rigidbody.AddTorque(-transform.up * rotationSpeed);
             back = true;
         }
         else
@@ -75,24 +78,53 @@ public class Wheel : Part
         }
     }
 
+    protected override void AttachToFixed(PartJoint m_joint, PartJoint _joint)
+    {
+        if (_joint == null || m_joint == null) return;
+        //设置连核关节
+        if (this.isLinkedCore == false && _joint.part.isLinkedCore)
+        {
+            SetCoreLinkedJoint(m_joint);
+        }
+        //增加该物体物理关节
+        if (m_joint.canAttach)
+        {
+            HingeJoint hingejoint = this.transform.AddComponent<HingeJoint>();
+            hingejoint.connectedBody = _joint.part.GetComponent<Rigidbody>();
+            hingejoint.anchor = m_joint.transform.localPosition;
+            hingejoint.connectedMassScale = 10.0f;
+            Debug.Log(m_joint.transform.localPosition);
+            hingejoint.axis = transform.forward;
+            hingejoint.useSpring = true;
+            JointSpring spring = hingejoint.spring;
+            spring.spring = 50000.0f;
+            spring.damper = 5000.0f;
+            hingejoint.spring = spring;
+            hingejoint.useLimits = false;
+            hingejoint.breakForce = 50000.0f;
+            hingejoint.breakTorque = 50000.0f;
+            _joint.part.onDestroy.AddListener(() =>
+            {
+                Destroy(hingejoint);
+            });
+            if (m_coreLinkedJoint == m_joint)
+            {
+                _joint.part.onDestroy.AddListener(() =>
+                {
+                    RefindCoreLinkedJointRecursively(); //重新查找核心关节
+                });
+            }
+        }
+    }
+
     private void CollisionStay()
     {
-        //Debug.Log("123");
+        bool _notOnGround = true;
         float angleStep = 360f / rayCount;
         for (int i = 0; i < rayCount; i++)
         {
             float angle = i * angleStep;
             float radian = angle * Mathf.Deg2Rad;
-
-            //forward会有问题 更换为四元数
-            //Debug.Log("位置：" + transform.position);
-            //Debug.Log("朝向：" + transform.forward);
-            //Vector3 v1 = originForward, v2 = transform.forward;
-            //Vector3 n = Vector3.Cross(v1, v2).normalized;
-            //float cos_theta = Vector3.Dot(v1.normalized, v2.normalized);
-            //float theta = Mathf.Acos(cos_theta);
-            //Quaternion q = Quaternion.AngleAxis(theta * Mathf.Rad2Deg, n);
-            //Debug.Log("旋转： " + q);
 
             //获得旋转四元数
             Quaternion currentRotation = transform.rotation;
@@ -100,7 +132,7 @@ public class Wheel : Part
 
             Vector3 direction = new Vector3(Mathf.Cos(radian), 0, Mathf.Sin(radian));
             direction = rotationDelta * direction;
-    
+
             //射线检测
             Ray ray = new Ray(detectionCenter.position, direction);
             RaycastHit hit;
@@ -109,37 +141,74 @@ public class Wheel : Part
             {
                 if (GameApp.DataManager.mode == Mode.Play)
                 {
-                    ForceAtPoint(hit.point, -direction);
-                    //Debug.Log("车轮摩擦力方向： "+-direction);
+                    _notOnGround = false;
                 }
                 Debug.DrawLine(ray.origin, hit.point, Color.red);
-                //Debug.Log("射线 " + i + " 击中了物体: " + hit.collider.gameObject.name);
             }
             else
             {
                 Debug.DrawLine(ray.origin, ray.origin + direction * rayLength, Color.green);
             }
         }
+        onGround = !_notOnGround;
+        return;
     }
-    private void ForceAtPoint(Vector3 pos, Vector3 nor)
-    {
-        Vector3 relativeVector = nor;
-        Quaternion worldYRotation = Quaternion.Euler(0f, -90f, 0f);
-        Quaternion localRotation = transform.rotation * worldYRotation * Quaternion.Inverse(transform.rotation);
-        Vector3 rotatedNor = localRotation * relativeVector;
 
-        Debug.DrawLine(pos, pos + rotatedNor, Color.green);
-        if (forward)
-        {
-            Debug.Log("forward");
-            //Debug.DrawLine(rotatedNor * power, pos, Color.green);
-            rb.AddForceAtPosition(rotatedNor * power, pos, ForceMode.Force);
-        }
-        if(back)
-        {
-            Debug.Log("back");
-            //Debug.DrawLine(-rotatedNor * power, pos, Color.green);
-            rb.AddForceAtPosition(-rotatedNor * power, pos, ForceMode.Force);
-        }
-    }
+    #region 已禁用
+    //private void CollisionStay()
+    //{
+    //    //Debug.Log("123");
+    //    float angleStep = 360f / rayCount;
+    //    for (int i = 0; i < rayCount; i++)
+    //    {
+    //        float angle = i * angleStep;
+    //        float radian = angle * Mathf.Deg2Rad;
+
+    //        //获得旋转四元数
+    //        Quaternion currentRotation = transform.rotation;
+    //        Quaternion rotationDelta = Quaternion.Inverse(originRotation) * currentRotation;
+
+    //        Vector3 direction = new Vector3(Mathf.Cos(radian), 0, Mathf.Sin(radian));
+    //        direction = rotationDelta * direction;
+
+    //        //射线检测
+    //        Ray ray = new Ray(detectionCenter.position, direction);
+    //        RaycastHit hit;
+
+    //        if (Physics.Raycast(ray, out hit, rayLength, LayerMask.GetMask("Ground")))
+    //        {
+    //            if (GameApp.DataManager.mode == Mode.Play)
+    //            {
+    //                ForceAtPoint(hit.point, -direction);
+    //            }
+    //            Debug.DrawLine(ray.origin, hit.point, Color.red);
+    //        }
+    //        else
+    //        {
+    //            Debug.DrawLine(ray.origin, ray.origin + direction * rayLength, Color.green);
+    //        }
+    //    }
+    //}
+    //private void ForceAtPoint(Vector3 pos, Vector3 nor)
+    //{
+    //    Vector3 relativeVector = nor;
+    //    Quaternion worldYRotation = Quaternion.Euler(0f, -90f, 0f);
+    //    Quaternion localRotation = transform.rotation * worldYRotation * Quaternion.Inverse(transform.rotation);
+    //    Vector3 rotatedNor = localRotation * relativeVector;
+
+    //    Debug.DrawLine(pos, pos + rotatedNor, Color.green);
+    //    if (forward)
+    //    {
+    //        Debug.Log("forward");
+    //        //Debug.DrawLine(rotatedNor * power, pos, Color.green);
+    //        m_rigidbody.AddForceAtPosition(rotatedNor * power, pos, ForceMode.Force);
+    //    }
+    //    if (back)
+    //    {
+    //        Debug.Log("back");
+    //        //Debug.DrawLine(-rotatedNor * power, pos, Color.green);
+    //        m_rigidbody.AddForceAtPosition(-rotatedNor * power, pos, ForceMode.Force);
+    //    }
+    //}
+    #endregion
 }

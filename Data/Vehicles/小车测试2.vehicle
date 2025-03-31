@@ -4,11 +4,168 @@
     "parts": [
         {
             "id": 1,
-            "prefabName": "Wheel",
+            "prefabName": "Cube",
+            "partTargetId": 0,
+            "rootJoint": 0,
+            "constraintJoint": 5,
+            "angle": 0.0,
+            "position": {
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.7881393432617188e-7
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.70710688829422,
+                "z": 0.0,
+                "w": 0.7071067690849304
+            },
+            "properties": []
+        },
+        {
+            "id": 2,
+            "prefabName": "Cube",
             "partTargetId": 0,
             "rootJoint": 0,
             "constraintJoint": 4,
             "angle": 0.0,
+            "position": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": -2.9802322387695315e-8
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": 0.7071067690849304,
+                "z": 0.0,
+                "w": -0.70710688829422
+            },
+            "properties": []
+        },
+        {
+            "id": 3,
+            "prefabName": "Cube",
+            "partTargetId": 1,
+            "rootJoint": 0,
+            "constraintJoint": 1,
+            "angle": 0.0,
+            "position": {
+                "x": -2.0,
+                "y": 0.0,
+                "z": 5.960464477539063e-7
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": -0.7071069478988648,
+                "z": 0.0,
+                "w": -0.7071067094802856
+            },
+            "properties": []
+        },
+        {
+            "id": 4,
+            "prefabName": "Cube",
+            "partTargetId": 2,
+            "rootJoint": 0,
+            "constraintJoint": 1,
+            "angle": 0.0,
+            "position": {
+                "x": 2.0,
+                "y": 0.0,
+                "z": -1.4901161193847657e-7
+            },
+            "rotation": {
+                "x": 0.0,
+                "y": -0.7071067094802856,
+                "z": 0.0,
+                "w": 0.7071069478988648
+            },
+            "properties": []
+        },
+        {
+            "id": 5,
+            "prefabName": "Wheel",
+            "partTargetId": 3,
+            "rootJoint": 0,
+            "constraintJoint": 4,
+            "angle": 0.0,
+            "position": {
+                "x": -2.000000238418579,
+                "y": -2.3841870699925495e-8,
+                "z": -0.6999995112419128
+            },
+            "rotation": {
+                "x": -0.7071068286895752,
+                "y": 1.7842259580902465e-7,
+                "z": 1.7842259580902465e-7,
+                "w": 0.7071068286895752
+            },
+            "properties": [
+                {
+                    "type": 3,
+                    "keyValue": 115,
+                    "floatValue": 0.0,
+                    "boolValue": false
+                },
+                {
+                    "type": 3,
+                    "keyValue": 119,
+                    "floatValue": 0.0,
+                    "boolValue": false
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "prefabName": "Wheel",
+            "partTargetId": 4,
+            "rootJoint": 0,
+            "constraintJoint": 5,
+            "angle": 0.0,
+            "position": {
+                "x": 1.999999761581421,
+                "y": -2.3841870699925495e-8,
+                "z": -0.7000002861022949
+            },
+            "rotation": {
+                "x": -0.7071068286895752,
+                "y": 1.7842259580902465e-7,
+                "z": 1.7842259580902465e-7,
+                "w": 0.7071068286895752
+            },
+            "properties": [
+                {
+                    "type": 3,
+                    "keyValue": 115,
+                    "floatValue": 0.0,
+                    "boolValue": false
+                },
+                {
+                    "type": 3,
+                    "keyValue": 119,
+                    "floatValue": 0.0,
+                    "boolValue": false
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "prefabName": "Wheel",
+            "partTargetId": 4,
+            "rootJoint": 0,
+            "constraintJoint": 4,
+            "angle": 0.0,
+            "position": {
+                "x": 2.0,
+                "y": -2.3841870699925495e-8,
+                "z": 0.6999999284744263
+            },
+            "rotation": {
+                "x": 1.7842259580902465e-7,
+                "y": 0.7071068286895752,
+                "z": 0.7071068286895752,
+                "w": -1.7842259580902465e-7
+            },
             "properties": [
                 {
                     "type": 3,
@@ -25,22 +182,33 @@
             ]
         },
         {
-            "id": 2,
+            "id": 8,
             "prefabName": "Wheel",
-            "partTargetId": 0,
+            "partTargetId": 3,
             "rootJoint": 0,
             "constraintJoint": 5,
-            "angle": 180.0,
+            "angle": 0.0,
+            "position": {
+                "x": -1.9999996423721314,
+                "y": -2.3841870699925495e-8,
+                "z": 0.7000007033348084
+            },
+            "rotation": {
+                "x": -1.7842259580902465e-7,
+                "y": -0.7071068286895752,
+                "z": -0.7071068286895752,
+                "w": 1.7842259580902465e-7
+            },
             "properties": [
                 {
                     "type": 3,
-                    "keyValue": 115,
+                    "keyValue": 119,
                     "floatValue": 0.0,
                     "boolValue": false
                 },
                 {
                     "type": 3,
-                    "keyValue": 119,
+                    "keyValue": 115,
                     "floatValue": 0.0,
                     "boolValue": false
                 }

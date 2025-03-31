@@ -10,7 +10,7 @@ public class GameScene : MonoBehaviour
     private static bool isLoaded = false;
     private void Awake()
     {
-        if(isLoaded == true)
+        if (isLoaded == true)
         {
             Destroy(gameObject);
         }

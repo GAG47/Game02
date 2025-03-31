@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 8621183431742700479}
   - component: {fileID: 8621183431742700472}
   - component: {fileID: 8621183431742700473}
-  - component: {fileID: 4555695403113292059}
-  - component: {fileID: 2064447772547173856}
+  - component: {fileID: 728084765446882230}
+  - component: {fileID: 2575630179588462443}
   m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 8621183431742700474}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.82, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -113,82 +113,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4555695403113292059
-MonoBehaviour:
+--- !u!54 &728084765446882230
+Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8621183431742700474}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fcb0f32d9e121740a388ce658914a8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isRoot: 0
-  mass: 10
-  health: 10
-  prefabName: Core
-  angle: 0
-  onDestroy:
-    m_PersistentCalls:
-      m_Calls: []
-  unInit: 1
-  onRelativePositionChange:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!171741748 &2064447772547173856
-ArticulationBody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8621183431742700474}
-  m_Enabled: 1
-  serializedVersion: 5
+  serializedVersion: 4
   m_Mass: 1
-  m_ParentAnchorPosition: {x: 0, y: 0, z: 0}
-  m_ParentAnchorRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_AnchorPosition: {x: 0, y: 0, z: 0}
-  m_AnchorRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_MatchAnchors: 1
-  m_ArticulationJointType: 0
-  m_LinearX: 2
-  m_LinearY: 2
-  m_LinearZ: 2
-  m_SwingY: 2
-  m_SwingZ: 2
-  m_Twist: 2
-  m_XDrive:
-    lowerLimit: 0
-    upperLimit: 0
-    stiffness: 0
-    damping: 0
-    forceLimit: 3.4028235e+38
-    target: 0
-    targetVelocity: 0
-    driveType: 0
-  m_YDrive:
-    lowerLimit: 0
-    upperLimit: 0
-    stiffness: 0
-    damping: 0
-    forceLimit: 3.4028235e+38
-    target: 0
-    targetVelocity: 0
-    driveType: 0
-  m_ZDrive:
-    lowerLimit: 0
-    upperLimit: 0
-    stiffness: 0
-    damping: 0
-    forceLimit: 3.4028235e+38
-    target: 0
-    targetVelocity: 0
-    driveType: 0
-  m_LinearDamping: 0.05
-  m_AngularDamping: 0.05
-  m_JointFriction: 0.05
+  m_Drag: 0
+  m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -200,9 +135,32 @@ ArticulationBody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_Immovable: 0
   m_UseGravity: 1
-  m_CollisionDetectionMode: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
+--- !u!114 &2575630179588462443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8621183431742700474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51c95e353b684fa4db844ab70c33a785, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabName: Core
+  angle: 0
+  isRoot: 0
+  isLinkedCore: 0
+  mass: 100
+  health: 10
+  onDestroy:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1183942595286671114
 PrefabInstance:
   m_ObjectHideFlags: 0

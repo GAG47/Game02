@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3078063939196727585}
   - component: {fileID: 5792943040748314767}
   - component: {fileID: 632005429306257630}
+  - component: {fileID: 1827638248699208167}
   - component: {fileID: 1097160787358898866}
   m_Layer: 7
   m_Name: Slope
@@ -110,6 +111,33 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0000002, y: 1.0000002, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &1827638248699208167
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 465630925685002773}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!114 &1097160787358898866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,11 +150,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fcb0f32d9e121740a388ce658914a8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefabName: Core
+  angle: 0
   isRoot: 0
   mass: 10
   health: 10
-  prefabName: Core
-  angle: 0
   onDestroy:
     m_PersistentCalls:
       m_Calls: []

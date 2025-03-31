@@ -56,8 +56,13 @@ public class EditView : BaseView
             UpdateToturial();
         });
     }
+    public override void Open(params object[] args)
+    {
+        base.Open(args);
+        UpdateToturial();
+    }
 
-    private void UpdateToturial()
+    public void UpdateToturial()
     {
         tutorial.text = "R：旋转物体\n" +
             "F：改变连接面\n" +

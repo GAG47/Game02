@@ -9,6 +9,7 @@ using System.Data;
 using UnityEngine.Rendering;
 using UnityEditor.Experimental.GraphView;
 using Unity.VisualScripting;
+using UnityEngine.SceneManagement;
 
 public class VehicleEditorController : MonoBehaviour
 {
@@ -19,52 +20,46 @@ public class VehicleEditorController : MonoBehaviour
         Erase
     }
 
+    //载具信息
+    [Header("载具信息")]
+    public string vehicleName = "";
     [SerializeField] Vector3 startPosition;
 
+    //示意物体
+    Part partPreview = null;
     [SerializeField] Material transparentMaterial;
 
-    Part partPreview = null;
-
-    Rigidbody rb;
-
-    public List<Part> selectedParts = new List<Part>();
-
-    public string vehicleName = "";
-
-    int m_currentPartID = 0;
-
+    //选择、放置、删除物体相关变量
+    [Header("选择、放置、删除物体相关变量")]
     public Tool currentTool = Tool.Place;
-
-    [HideInInspector] float m_partAngle = 0.0f;
-
+    public List<Part> selectedParts = new List<Part>();
     public UnityEvent onPartSelected = new UnityEvent();
+    int m_currentPartID = 0;
+    [HideInInspector] float m_partAngle = 0.0f;
 
     IEnumerator Start()
     {
-        rb = GetComponent<Rigidbody>();
-        rb.isKinematic = true;
+        GameApp.DataManager.currentPartIndex = -1;
+
         GameApp.DataManager.onModeChange.AddListener(() =>
         {
             switch (GameApp.DataManager.mode)
             {
                 case Mode.Edit:
-                    Debug.Log("Edit");
+                    Debug.Log("载具编辑器 Edit");
                     ResetVehicle();
-                    rb.isKinematic = true;
                     GameApp.DataManager.missionEnded = false;
                     GameApp.DataManager.LoadVehicle(this, "../tmp");
                     break;
                 case Mode.Play:
-                    Debug.Log("Play");
+                    Debug.Log("载具编辑器 Play");
                     GameApp.DataManager.SaveVehicle(this, "../tmp");
-                    rb.isKinematic = false;
                     if (partPreview != null)
                         partPreview.gameObject.SetActive(false);
                     break;
                 default:
                     break;
             }
-            ComputeCenterOfMass();
             foreach (Part part in selectedParts)
             {
                 part.isSelected = false;
@@ -103,8 +98,6 @@ public class VehicleEditorController : MonoBehaviour
     {
         transform.position = startPosition;
         transform.rotation = Quaternion.identity;
-        rb.velocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
     }
 
     void Update()
@@ -113,27 +106,11 @@ public class VehicleEditorController : MonoBehaviour
         {
             ResetVehicle();
         }
-
-
-        rb.drag = 0.0f;
-        rb.angularDrag = 0.0f;
+        
         if (GameApp.DataManager.mode != Mode.Edit)
         {
-
-            if(Input.GetKey(KeyCode.LeftControl))
-            {
-                rb.drag = 0.8f;
-                rb.angularDrag = 0.8f;
-            }
-
-            if(Input.GetKeyDown(KeyCode.Delete))
-            {
-                foreach(Part part in selectedParts)
-                {
-                    part.Destroy();
-                }
-            }
-
+            //todo
+            //运行时的相关操作
             return;
         }
 
@@ -148,16 +125,17 @@ public class VehicleEditorController : MonoBehaviour
             return;
         }
 
+
+        //放置状态
         if (currentTool == Tool.Place && GameApp.DataManager.currentPartIndex >= 0 && GameApp.DataManager.currentPartIndex < GameApp.DataManager.prefabParts.Count)
         {
+            //Debug.Log(currentTool.ToString() + " " + GameApp.DataManager.currentPartIndex + " " + GameApp.DataManager.prefabParts.Count);
             Vector3 mousePos;
             if (GetMouseWorldPosition(out mousePos))
             {
                 PartJoint joint = GetNearestJoint(mousePos);
-
                 if (joint != null && partPreview != null)
                 {
-                    
                     if (partPreview.parentJoint != joint && !joint.isAttached)
                     {
                         //partPreview.transform.position = joint.transform.position;
@@ -194,8 +172,6 @@ public class VehicleEditorController : MonoBehaviour
                 //    ComputeCenterOfMass();
                 //    obj.ApplyExplosion(rb);
                 //});
-
-                ComputeCenterOfMass();
             }
 
             //旋转
@@ -256,7 +232,7 @@ public class VehicleEditorController : MonoBehaviour
                 onPartSelected.Invoke();
             }
 
-            if (Input.GetKeyDown(KeyCode.Delete))
+            if (Input.GetKeyDown(KeyCode.X))
             {
                 foreach (Part part in selectedParts)
                 {
@@ -264,7 +240,7 @@ public class VehicleEditorController : MonoBehaviour
                 }
                 foreach (Part part in selectedParts)
                 {
-                    part.DestroyRecursively();
+                    part.Destroy();
                 }
                 selectedParts.Clear();
             }
@@ -292,27 +268,12 @@ public class VehicleEditorController : MonoBehaviour
                     }
                     if (part != null && part.transform != transform.GetChild(0))
                     {
-                        part.DestroyRecursively();
-                        ComputeCenterOfMass();
+                        part.Destroy();
                     }
                 }
             }
         }
     }
-
-    public void ComputeCenterOfMass()
-    {
-        Vector3 com = Vector3.zero;
-        float massSum = 0.0f;
-        foreach (Part part in GetComponentsInChildren<Part>())
-        {
-            massSum += part.mass;
-            com += part.mass * part.transform.localPosition;
-        }
-        rb.centerOfMass = com / massSum;
-        rb.mass = massSum;
-    }
-
     public void Clear()
     {
         //清楚选中节点
@@ -328,7 +289,6 @@ public class VehicleEditorController : MonoBehaviour
         {
             transform.GetChild(i).GetComponent<Part>().Detach();
         }
-
         while (transform.childCount > 1)
         {
             DestroyImmediate(transform.GetChild(transform.childCount - 1).gameObject);
@@ -346,7 +306,6 @@ public class VehicleEditorController : MonoBehaviour
             _position = hit.point;
             hasHit = true;
         }
-
         return hasHit;
     }
 
@@ -359,7 +318,6 @@ public class VehicleEditorController : MonoBehaviour
     PartJoint GetNearestJoint(Vector3 _position)
     {
         PartJoint joint = null;
-
         foreach (PartJoint j in GetAllJointInRadius(_position, 2.0f))
         {
             if(joint == null || (j.transform.position - _position).sqrMagnitude < (joint.transform.position - _position).sqrMagnitude)
@@ -367,7 +325,6 @@ public class VehicleEditorController : MonoBehaviour
                 joint = j;
             }
         }
-
         return joint;
     }
 
@@ -417,12 +374,19 @@ public class VehicleEditorController : MonoBehaviour
             {
                 Part part = Instantiate(prefab.gameObject, transform).GetComponent<Part>();
                 part.Deserialize(jsonPart);
-                part.AttachTo(GetPartByID(jsonPart.partTargetId).GetJointFromID(jsonPart.constraintJoint));
+                if (jsonPart.partTargetId != -1 && jsonPart.constraintJoint != -1)
+                {
+                    part.AttachTo(GetPartByID(jsonPart.partTargetId).GetJointFromID(jsonPart.constraintJoint));
+                }
+                else
+                {
+                    part.transform.position = jsonPart.position;
+                    part.transform.rotation = jsonPart.rotation;
+                    part.AttachEveryJoint();
+                }
             }
         }
-        ComputeCenterOfMass();
     }
-
 }
 
 [System.Serializable]

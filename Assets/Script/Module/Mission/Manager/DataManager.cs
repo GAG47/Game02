@@ -19,6 +19,7 @@ public enum MissionType
     None,
 }
 
+//零件种类
 public enum PartType
 {
     Cube,
@@ -29,7 +30,7 @@ public enum PartType
 }
 
 /// <summary>
-/// 数据管理器
+/// 数据管理器，用于存储载具、零件的基本数据
 /// </summary>
 public class DataManager
 {
@@ -51,7 +52,6 @@ public class DataManager
     }
 
     [SerializeField] public List<Part> prefabParts;
-    [SerializeField] public Debris prefabDebris;
     [SerializeField] public GameObject prefabExplosion;
     [SerializeField] public UnityEvent onModeChange = new UnityEvent();
     [SerializeField] public UnityEvent onPartChange = new UnityEvent();
@@ -83,19 +83,18 @@ public class DataManager
         shared.LoadAllAssets();
 
         //载入零件
+        //todo: 将所有写好的零件打包然后从包加载
         prefabParts = new List<Part>();
         prefabParts.Add(Resources.Load<GameObject>("Model/Vehicle/Cube/Cube").GetComponent<Part>());
         prefabParts.Add(Resources.Load<GameObject>("Model/Vehicle/Slope/Slope").GetComponent<Part>());
         prefabParts.Add(Resources.Load<GameObject>("Model/Vehicle/Thruster/Thruster").GetComponent<Part>());
         prefabParts.Add(Resources.Load<GameObject>("Model/Vehicle/Hitch/Hitch").GetComponent<Part>());
         prefabParts.Add(Resources.Load<GameObject>("Model/Vehicle/Wheel/Wheel").GetComponent<Part>());
-
-        for (int i = 0; i < prefabParts.Count; i++)
-        {
-            Debug.Log(prefabParts[i].name);
-        }
-
-        Debug.Log(prefabParts.Count + " parts loaded");
+        //for (int i = 0; i < prefabParts.Count; i++)
+        //{
+        //    Debug.Log(prefabParts[i].name);
+        //}
+        //Debug.Log(prefabParts.Count + " parts loaded");
     }
 
     public string GetCurrentPartName()
@@ -116,7 +115,6 @@ public class DataManager
                 prefab = part;
             }
         }
-
         return prefab;
     }
 

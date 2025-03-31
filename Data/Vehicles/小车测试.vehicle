@@ -7,8 +7,19 @@
             "prefabName": "Wheel",
             "partTargetId": 0,
             "rootJoint": 0,
-            "constraintJoint": 4,
+            "constraintJoint": 5,
             "angle": 0.0,
+            "position": {
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.1920928955078126e-7
+            },
+            "rotation": {
+                "x": -0.4999999403953552,
+                "y": 0.5000000596046448,
+                "z": 0.5000000596046448,
+                "w": 0.4999999403953552
+            },
             "properties": [
                 {
                     "type": 3,
@@ -29,18 +40,29 @@
             "prefabName": "Wheel",
             "partTargetId": 0,
             "rootJoint": 0,
-            "constraintJoint": 5,
+            "constraintJoint": 4,
             "angle": 0.0,
+            "position": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": -1.1920928955078126e-7
+            },
+            "rotation": {
+                "x": 0.5000000596046448,
+                "y": 0.4999999403953552,
+                "z": 0.4999999403953552,
+                "w": -0.5000000596046448
+            },
             "properties": [
                 {
                     "type": 3,
-                    "keyValue": 119,
+                    "keyValue": 115,
                     "floatValue": 0.0,
                     "boolValue": false
                 },
                 {
                     "type": 3,
-                    "keyValue": 115,
+                    "keyValue": 119,
                     "floatValue": 0.0,
                     "boolValue": false
                 }

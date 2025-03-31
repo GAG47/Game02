@@ -1,21 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PartJoint : MonoBehaviour
 {
-    public bool isAttached { get; private set; } = false;
+    //包含该关节的零件
+    public Part part = null;
 
     //连接的关节
-    public PartJoint connection { get; private set; } = null;
+    public bool isAttached { get; private set; } = false; //是否连接
+    public bool canAttach { get; private set; } = true; //是否可以发出物理连接
+    public PartJoint connection { get; private set; } = null; //连接的关节
 
     //基底位置和旋转
     public Vector3 position { get; private set; } = Vector3.zero;
     public Quaternion rotation { get; private set; } = Quaternion.identity;
     
-    //包含该关节的零件
-    public Part part = null;
-
+    //碰撞体相关
     private SphereCollider m_collider = null;
     private SphereCollider coll
     {
@@ -41,10 +44,36 @@ public class PartJoint : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if(coll != null)
+        {
+            Debug.DrawLine(transform.position, transform.position + transform.forward * 0.11f);
+        }
+    }
+
+    public PartJoint CheckNearJoint()
+    {
+        if (isAttached)
+        {
+            return null;
+        }
+        Collider[] colliders = Physics.OverlapSphere(transform.position, 0.1f, LayerMask.GetMask("Joints"));
+        foreach (Collider col in colliders)
+        {
+            PartJoint joint = col.GetComponent<PartJoint>();
+            if (joint != null && joint != this && !joint.isAttached && joint.canAttach)
+            {
+                return joint;
+            }
+        }
+        return null;
+    }
+
     public void AttachTo(PartJoint _joint, bool dontDisableOther = false)
     {
         Detach();
-        if (_joint != null && !_joint.isAttached)
+        if (_joint != null && !_joint.isAttached && _joint != this)
         {
             //该物体链接到其他物体
             isAttached = true;
@@ -58,12 +87,10 @@ public class PartJoint : MonoBehaviour
                 connection.connection = this;
                 connection.coll.enabled = false;
             }
-
             position = connection.transform.position;
             rotation = connection.transform.rotation * Quaternion.Euler(0.0f, 180.0f, 0.0f);
         }
     }
-
     public void Detach()
     {
         if(connection != null)

@@ -26,7 +26,7 @@ public class Hitch : Part
         if (transform.parent == null || transform.root.name != "Vehicle")
             return;
 
-        if (GameApp.DataManager.mode != Mode.Play)
+        if (GameApp.DataManager.mode != Mode.Play || isLinkedCore == false)
         {
             return;
         }
@@ -43,9 +43,6 @@ public class Hitch : Part
 
             Transform tmp = movablePart;
             //tmp.position = transform.position;
-            onRelativePositionChange.Invoke(tmp);
-
-            transform.parent.GetComponent<VehicleEditorController>().ComputeCenterOfMass(); //重新计算质心
         }
 
         bool rightRotate = false;
@@ -60,9 +57,7 @@ public class Hitch : Part
             
             Transform tmp = movablePart;
             //tmp.position = transform.position;
-            onRelativePositionChange.Invoke(tmp);
-            
-            transform.parent.GetComponent<VehicleEditorController>().ComputeCenterOfMass();
+            //onRelativePositionChange.Invoke(tmp);
         }
     }
 }

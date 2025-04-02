@@ -106,4 +106,11 @@ public class PartJoint : MonoBehaviour
             coll.enabled = true;
         }
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(transform.position, 0.01f);
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * 0.2f);
+    }
 }

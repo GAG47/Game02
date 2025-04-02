@@ -47,6 +47,7 @@ public class VehicleEditorController : MonoBehaviour
             {
                 case Mode.Edit:
                     Debug.Log("载具编辑器 Edit");
+                    //Physics.SyncTransforms();
                     ResetVehicle();
                     GameApp.DataManager.missionEnded = false;
                     GameApp.DataManager.LoadVehicle(this, "../tmp");

@@ -113,7 +113,7 @@ public class MissionController : BaseController
         {
             GameApp.ViewManager.Close((int)ViewType.PauseView);
         }
-        if (_pause)
+        else if (_pause)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;

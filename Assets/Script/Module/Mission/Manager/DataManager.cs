@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public enum Mode
 {
@@ -95,6 +96,20 @@ public class DataManager
         //    Debug.Log(prefabParts[i].name);
         //}
         //Debug.Log(prefabParts.Count + " parts loaded");
+
+        this.onModeChange.AddListener(() =>
+        {
+            switch (GameApp.DataManager.mode)
+            {
+                case Mode.Edit:
+                    //重新载入当前场景
+                    break;
+                case Mode.Play:
+                    break;
+                default:
+                    break;
+            }
+        });
     }
 
     public string GetCurrentPartName()

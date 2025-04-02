@@ -81,8 +81,11 @@ public class Part : MonoBehaviour
         if (m_rigidbody == null)
         {
             m_rigidbody = GetComponent<Rigidbody>();
-            m_rigidbody.isKinematic = true;
-            m_rigidbody.mass = mass;
+            if(m_rigidbody != null)
+            {
+                m_rigidbody.isKinematic = true;
+                m_rigidbody.mass = mass;
+            }
         }
 
         GameApp.DataManager.onModeChange.AddListener(() =>
@@ -90,10 +93,16 @@ public class Part : MonoBehaviour
             switch (GameApp.DataManager.mode)
             {
                 case Mode.Edit:
-                    m_rigidbody.isKinematic = true;
+                    if (m_rigidbody != null)
+                    {
+                        m_rigidbody.isKinematic = true;
+                    }
                     break;
                 case Mode.Play:
-                    m_rigidbody.isKinematic = false;
+                    if (m_rigidbody != null)
+                    {
+                        m_rigidbody.isKinematic = false;
+                    }
                     break;
                 default:
                     break;
@@ -245,7 +254,7 @@ public class Part : MonoBehaviour
     }
 
     //如果子类对应的物体的连接关节需要修改，则重写该函数
-    protected virtual void AttachToFixed(PartJoint m_joint, PartJoint _joint)
+    public virtual void AttachToFixed(PartJoint m_joint, PartJoint _joint, bool anotherAttach = true)
     {
         if (_joint == null || m_joint == null) return;
         //设置连核关节
@@ -274,24 +283,10 @@ public class Part : MonoBehaviour
             }
         }
         //增加其他物体物理关节
-        if (_joint.canAttach)
-        {
-            FixedJoint fixedJoint2 = _joint.part.transform.AddComponent<FixedJoint>();
-            fixedJoint2.connectedBody = this.GetComponent<Rigidbody>();
-            fixedJoint2.connectedMassScale = 5.0f;
-            fixedJoint2.breakForce = 50000.0f;
-            fixedJoint2.breakTorque = 50000.0f;
-            //Debug.Log("fixedJoint2 Anchor: " +  fixedJoint2.anchor);
-            //Debug.Log("fixedJoint2 connectedAnchor: " +  fixedJoint2.connectedAnchor);
-            if (_joint.part.isLinkedCore)
-            {
-                _joint.part.SetCoreLinkedJointRecursively(_joint);
-            }
-            this.onDestroy.AddListener(() =>
-            {
-                Destroy(fixedJoint2);
-            });
-        }
+        //if(anotherAttach)
+        //{ 
+        //    _joint.part.AttachToFixed(_joint, m_joint, false);
+        //}
     }
 
     //将当前零件从其连接的根关节上分离

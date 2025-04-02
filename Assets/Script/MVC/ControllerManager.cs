@@ -64,7 +64,7 @@ public class ControllerManager
     }
 
     //跨模板触发消息
-    public void ApplyFunc(int controllerKye, string eventName, System.Object[] args)
+    public void ApplyFunc(int controllerKye, string eventName, params object[] args)
     {
         if(_modules.ContainsKey(controllerKye))
         {

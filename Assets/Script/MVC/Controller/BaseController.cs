@@ -48,7 +48,7 @@ public class BaseController
     //触发本模板事件
     public void ApplyFunc(string eventName,params object[] args)
     {
-        Debug.Log("ApplyFunc:" + eventName + " invoke!");
+        //Debug.Log("ApplyFunc:" + eventName + " invoke!");
         if (message.ContainsKey(eventName))
         {
             message[eventName].Invoke(args);

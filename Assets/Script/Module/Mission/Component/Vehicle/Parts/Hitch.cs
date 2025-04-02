@@ -1,27 +1,62 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
 
 public class Hitch : Part
 {
-    [SerializeField] float leftAngleSide = 60.0f;
-    [SerializeField] float rightAngleSide = 60.0f;
-    [SerializeField] float rotateSpeed = 1.0f;
-    [SerializeField] Transform movablePart;
-
     Ref<KeyCode> leftKey = new Ref<KeyCode>(KeyCode.None);
     Ref<KeyCode> rightKey = new Ref<KeyCode>(KeyCode.None);
-    float rotateY = 0f;
 
     protected override void Awake()
     {
         base.Awake();
         properties.Add(new Property("向左旋转", leftKey));
         properties.Add(new Property("向右旋转", rightKey));
-        rotateY = 0f;
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+            Rigidbody rb = child.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.isKinematic = true;
+            }
+        }
+        GameApp.DataManager.onModeChange.AddListener(() =>
+        {
+            switch (GameApp.DataManager.mode)
+            {
+                case Mode.Edit:
+                    //遍历所有孩子
+                    for (int i = 0; i < transform.childCount; i++)
+                    {
+                        Transform child = transform.GetChild(i);
+                        Rigidbody rb = child.GetComponent<Rigidbody>();
+                        if (rb != null)
+                        {
+                            rb.isKinematic = true;
+                        }
+                    }
+                    break;
+                case Mode.Play:
+                    for (int i = 0; i < transform.childCount; i++)
+                    {
+                        Transform child = transform.GetChild(i);
+                        Rigidbody rb = child.GetComponent<Rigidbody>();
+                        if (rb != null)
+                        {
+                            rb.isKinematic = false;
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        });
     }
-    protected void FixedUpdate()
+    protected void Update()
     {
         if (transform.parent == null || transform.root.name != "Vehicle")
             return;
@@ -30,34 +65,50 @@ public class Hitch : Part
         {
             return;
         }
+    }
 
-        bool leftRotate = false;
-        if (leftKey.asValue != KeyCode.None)
+    public override void AttachToFixed(PartJoint m_joint, PartJoint _joint, bool anotherAttach = true)
+    {
+        if (_joint == null || m_joint == null) return;
+        //设置连核关节
+        if (this.isLinkedCore == false && _joint.part.isLinkedCore)
         {
-            leftRotate = Input.GetKey(leftKey.asValue);
+            SetCoreLinkedJoint(m_joint);
         }
-        if (leftRotate && rotateY > -leftAngleSide)
+        //增加该物体物理关节
+        if (m_joint.canAttach)
         {
-            rotateY -= rotateSpeed * Time.deltaTime;
-            movablePart.Rotate(0f, -rotateSpeed * Time.deltaTime, 0f, Space.Self);
-
-            Transform tmp = movablePart;
-            //tmp.position = transform.position;
+            FixedJoint fixedJoint = null;
+            if (m_joint.name == "Joint1")
+            {
+                Transform targetChild = transform.Find("Buttom");
+                fixedJoint = targetChild.AddComponent<FixedJoint>();
+            }
+            else
+            {
+                Transform targetChild = transform.Find("Top");
+                fixedJoint = targetChild.AddComponent<FixedJoint>();
+            }
+            fixedJoint.connectedBody = _joint.part.GetComponent<Rigidbody>();
+            fixedJoint.connectedMassScale = 5.0f;
+            fixedJoint.breakForce = 50000.0f;
+            fixedJoint.breakTorque = 50000.0f;
+            _joint.part.onDestroy.AddListener(() =>
+            {
+                Destroy(fixedJoint);
+            });
+            if (m_coreLinkedJoint == m_joint)
+            {
+                _joint.part.onDestroy.AddListener(() =>
+                {
+                    RefindCoreLinkedJointRecursively(); //重新查找核心关节
+                });
+            }
         }
-
-        bool rightRotate = false;
-        if (rightKey.asValue != KeyCode.None)
-        {
-            rightRotate = Input.GetKey(rightKey.asValue);
-        }
-        if (rightRotate && rotateY < rightAngleSide)
-        {
-            rotateY += rotateSpeed * Time.deltaTime;
-            movablePart.Rotate(0f, rotateSpeed * Time.deltaTime, 0f, Space.Self);
-            
-            Transform tmp = movablePart;
-            //tmp.position = transform.position;
-            //onRelativePositionChange.Invoke(tmp);
-        }
+        //增加其他物体物理关节
+        //if (anotherAttach)
+        //{
+        //    _joint.part.AttachToFixed(_joint, m_joint, false);
+        //}
     }
 }

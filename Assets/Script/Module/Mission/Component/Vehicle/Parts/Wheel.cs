@@ -78,7 +78,7 @@ public class Wheel : Cube
         }
     }
 
-    protected override void AttachToFixed(PartJoint m_joint, PartJoint _joint)
+    public override void AttachToFixed(PartJoint m_joint, PartJoint _joint, bool anotherAttach = true)
     {
         if (_joint == null || m_joint == null) return;
         //设置连核关节

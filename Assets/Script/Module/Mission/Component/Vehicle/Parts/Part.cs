@@ -187,11 +187,17 @@ public class Part : MonoBehaviour
             if (!dontDisableOther)
             {
                 AttachToFixed(m_rootJoint, _joint);
+                _joint.part.AttachToFixed(_joint, m_rootJoint);
                 for (int i = 0; i < m_joints.Count; i++)
                 {
                     if (m_joints[i] != m_rootJoint)
                     {
-                        AttachToFixed(m_joints[i], m_joints[i].CheckNearJoint());
+                        _joint = m_joints[i].CheckNearJoint();
+                        if(_joint != null)
+                        {
+                            AttachToFixed(m_joints[i], _joint);
+                            _joint.part.AttachToFixed(_joint, m_joints[i]);
+                        }
                     }
                 }
                 if (isLinkedCore)
@@ -254,7 +260,7 @@ public class Part : MonoBehaviour
     }
 
     //如果子类对应的物体的连接关节需要修改，则重写该函数
-    public virtual void AttachToFixed(PartJoint m_joint, PartJoint _joint, bool anotherAttach = true)
+    public virtual void AttachToFixed(PartJoint m_joint, PartJoint _joint)
     {
         if (_joint == null || m_joint == null) return;
         //设置连核关节
@@ -266,10 +272,11 @@ public class Part : MonoBehaviour
         if(m_joint.canAttach)
         {
             FixedJoint fixedJoint = this.transform.AddComponent<FixedJoint>();
-            fixedJoint.connectedBody = _joint.part.GetComponent<Rigidbody>();
+            fixedJoint.connectedBody = _joint.fixedPart;
             fixedJoint.connectedMassScale = 5.0f;
             fixedJoint.breakForce = 50000.0f;
             fixedJoint.breakTorque = 50000.0f;
+            fixedJoint.enableCollision = true;
             _joint.part.onDestroy.AddListener(() =>
             {
                 Destroy(fixedJoint);
@@ -282,11 +289,6 @@ public class Part : MonoBehaviour
                 });
             }
         }
-        //增加其他物体物理关节
-        //if(anotherAttach)
-        //{ 
-        //    _joint.part.AttachToFixed(_joint, m_joint, false);
-        //}
     }
 
     //将当前零件从其连接的根关节上分离

@@ -1,21 +1,24 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Wheel : Cube
+public class Wheel : Part
 {
-    [SerializeField] float power = 200.0f;
-    [SerializeField] float rotationSpeed = 200.0f;
-    private Rigidbody rb;
+    //基本属性
+    [SerializeField] float power = 2000.0f;
+    [SerializeField] float rotationSpeed = 2000.0f;
     private Transform wheelMod;
-    private bool onGround;
+    private Quaternion originRotation;
+    [SerializeField] private Transform wheelLink; //连接零件
+    [SerializeField] private HingeJoint m_hingeJoint; //铰链关节
 
+    //控制属性相关
     Ref<KeyCode> forwardKey = new Ref<KeyCode>(KeyCode.None);
     Ref<KeyCode> backKey = new Ref<KeyCode>(KeyCode.None);
     bool forward = false;
     bool back = false;
 
-    private Quaternion originRotation;
-
+    //射线检测相关
+    private bool onGround;
     [SerializeField] private int rayCount = 36;
     [SerializeField] private float rayLength = 1.05f;
     [SerializeField] private Transform detectionCenter;
@@ -23,12 +26,24 @@ public class Wheel : Cube
     protected override void Awake()
     {
         base.Awake();
+        this.prefabName = "Wheel";
+
         properties.Add(new Property("前进", forwardKey));
         properties.Add(new Property("后退", backKey));
 
         wheelMod = transform.Find("WheelModel");
         originRotation = new Quaternion(0, 0, 0, 1);
+        m_rigidbody = transform.Find("WheelModel").GetComponent<Rigidbody>();
 
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+            Rigidbody rb = child.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.isKinematic = true;
+            }
+        }
         GameApp.DataManager.onModeChange.AddListener(() =>
         {
             switch (GameApp.DataManager.mode)
@@ -36,8 +51,26 @@ public class Wheel : Cube
                 case Mode.Edit:
                     wheelMod.localPosition = new Vector3(0, 0.5f, 0);
                     wheelMod.localRotation = new Quaternion(0, 0, 0, 1);
+                    for (int i = 0; i < transform.childCount; i++)
+                    {
+                        Transform child = transform.GetChild(i);
+                        Rigidbody rb = child.GetComponent<Rigidbody>();
+                        if (rb != null)
+                        {
+                            rb.isKinematic = true;
+                        }
+                    }
                     break;
                 case Mode.Play:
+                    for (int i = 0; i < transform.childCount; i++)
+                    {
+                        Transform child = transform.GetChild(i);
+                        Rigidbody rb = child.GetComponent<Rigidbody>();
+                        if (rb != null)
+                        {
+                            rb.isKinematic = false;
+                        }
+                    }
                     break;
                 default:
                     break;
@@ -60,7 +93,16 @@ public class Wheel : Cube
         //前进/后退
         if (forwardKey.asValue != KeyCode.None && Input.GetKey(forwardKey.asValue) && this.isLinkedCore)
         {
-            m_rigidbody.AddTorque(transform.up * rotationSpeed);
+            //if(onGround)
+            //{
+            //    m_hingeJoint.motor = new JointMotor { force = power, targetVelocity = rotationSpeed };
+            //    m_hingeJoint.useMotor = true;
+            //}
+            //else
+            //{
+            //    m_hingeJoint.useMotor = false;
+            //}
+            m_rigidbody.AddTorque(transform.right * power, ForceMode.Force);
             forward = true;
         }
         else
@@ -69,7 +111,16 @@ public class Wheel : Cube
         }
         if (backKey.asValue != KeyCode.None && Input.GetKey(backKey.asValue) && this.isLinkedCore)
         {
-            m_rigidbody.AddTorque(-transform.up * rotationSpeed);
+            //if(onGround)
+            //{
+            //    m_hingeJoint.motor = new JointMotor { force = power, targetVelocity = -rotationSpeed };
+            //    m_hingeJoint.useMotor = true;
+            //}
+            //else
+            //{
+            //    m_hingeJoint.useMotor = false;
+            //}
+            m_rigidbody.AddTorque(-transform.right * power, ForceMode.Force);
             back = true;
         }
         else
@@ -78,7 +129,7 @@ public class Wheel : Cube
         }
     }
 
-    public override void AttachToFixed(PartJoint m_joint, PartJoint _joint, bool anotherAttach = true)
+    public override void AttachToFixed(PartJoint m_joint, PartJoint _joint)
     {
         if (_joint == null || m_joint == null) return;
         //设置连核关节
@@ -89,23 +140,14 @@ public class Wheel : Cube
         //增加该物体物理关节
         if (m_joint.canAttach)
         {
-            HingeJoint hingejoint = this.transform.AddComponent<HingeJoint>();
-            hingejoint.connectedBody = _joint.part.GetComponent<Rigidbody>();
-            hingejoint.anchor = m_joint.transform.localPosition;
-            hingejoint.connectedMassScale = 10.0f;
-            Debug.Log(m_joint.transform.localPosition);
-            hingejoint.axis = transform.forward;
-            hingejoint.useSpring = true;
-            JointSpring spring = hingejoint.spring;
-            spring.spring = 50000.0f;
-            spring.damper = 5000.0f;
-            hingejoint.spring = spring;
-            hingejoint.useLimits = false;
-            hingejoint.breakForce = 50000.0f;
-            hingejoint.breakTorque = 50000.0f;
+            FixedJoint fixedJoint = wheelLink.AddComponent<FixedJoint>();
+            fixedJoint.connectedBody = _joint.fixedPart;
+            fixedJoint.connectedMassScale = 5.0f;
+            fixedJoint.breakForce = 50000.0f;
+            fixedJoint.breakTorque = 50000.0f;
             _joint.part.onDestroy.AddListener(() =>
             {
-                Destroy(hingejoint);
+                Destroy(fixedJoint);
             });
             if (m_coreLinkedJoint == m_joint)
             {
@@ -154,10 +196,9 @@ public class Wheel : Cube
         return;
     }
 
-    #region 已禁用
+    #region 已弃用
     //private void CollisionStay()
     //{
-    //    //Debug.Log("123");
     //    float angleStep = 360f / rayCount;
     //    for (int i = 0; i < rayCount; i++)
     //    {

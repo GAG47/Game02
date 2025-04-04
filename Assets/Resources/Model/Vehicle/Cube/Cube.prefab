@@ -111,7 +111,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.9, y: 0.9, z: 0.9}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &728084765446882230
 Rigidbody:
@@ -154,6 +154,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabName: Core
   angle: 0
+  position: {x: 0, y: 0, z: 0}
+  rotaion: {x: 0, y: 0, z: 0, w: 1}
   isRoot: 0
   isLinkedCore: 0
   mass: 100
@@ -213,6 +215,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: fixedPart
+      value: 
+      objectReference: {fileID: 728084765446882230}
     - target: {fileID: 8274628161770077805, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
       propertyPath: m_Name
       value: Joint3
@@ -279,6 +285,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: fixedPart
+      value: 
+      objectReference: {fileID: 728084765446882230}
     - target: {fileID: 8274628161770077805, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
       propertyPath: m_Name
       value: Joint5
@@ -345,6 +355,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: fixedPart
+      value: 
+      objectReference: {fileID: 728084765446882230}
     - target: {fileID: 8274628161770077805, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
       propertyPath: m_Name
       value: Joint4
@@ -411,6 +425,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: canAttach
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: fixedPart
+      value: 
+      objectReference: {fileID: 728084765446882230}
     - target: {fileID: 8274628161770077805, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
       propertyPath: m_Name
       value: Joint2
@@ -477,6 +499,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: fixedPart
+      value: 
+      objectReference: {fileID: 728084765446882230}
     - target: {fileID: 8274628161770077805, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
       propertyPath: m_Name
       value: Joint6
@@ -543,6 +569,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: canAttach
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: fixedPart
+      value: 
+      objectReference: {fileID: 728084765446882230}
     - target: {fileID: 8274628161770077805, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
       propertyPath: m_Name
       value: Joint1

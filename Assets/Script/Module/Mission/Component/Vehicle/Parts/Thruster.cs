@@ -13,6 +13,8 @@ public class Thruster : Part
     protected override void Awake()
     {
         base.Awake();
+        this.prefabName = "Thruster";
+
         properties.Add(new Property("推进按键", key));
     }
 

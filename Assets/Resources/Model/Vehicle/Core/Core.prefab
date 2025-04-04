@@ -154,6 +154,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabName: Core
   angle: 0
+  position: {x: 0, y: 0, z: 0}
+  rotaion: {x: 0, y: 0, z: 0, w: 1}
   isRoot: 0
   isLinkedCore: 0
   mass: 10
@@ -213,6 +215,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: canAttach
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: fixedPart
+      value: 
+      objectReference: {fileID: 5481451745834875629}
     - target: {fileID: 8274628161770077805, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
       propertyPath: m_Name
       value: Joint3
@@ -279,6 +289,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: canAttach
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: fixedPart
+      value: 
+      objectReference: {fileID: 5481451745834875629}
     - target: {fileID: 8274628161770077805, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
       propertyPath: m_Name
       value: Joint5
@@ -345,6 +363,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: canAttach
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: fixedPart
+      value: 
+      objectReference: {fileID: 5481451745834875629}
     - target: {fileID: 8274628161770077805, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
       propertyPath: m_Name
       value: Joint4
@@ -411,6 +437,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: canAttach
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: fixedPart
+      value: 
+      objectReference: {fileID: 5481451745834875629}
     - target: {fileID: 8274628161770077805, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
       propertyPath: m_Name
       value: Joint2
@@ -477,6 +511,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: canAttach
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: fixedPart
+      value: 
+      objectReference: {fileID: 5481451745834875629}
     - target: {fileID: 8274628161770077805, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
       propertyPath: m_Name
       value: Joint6
@@ -543,6 +585,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: canAttach
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: fixedPart
+      value: 
+      objectReference: {fileID: 5481451745834875629}
     - target: {fileID: 8274628161770077805, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
       propertyPath: m_Name
       value: Joint1

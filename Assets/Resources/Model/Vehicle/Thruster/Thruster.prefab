@@ -77,7 +77,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabName: Core
   angle: 0
+  position: {x: 0, y: 0, z: 0}
+  rotaion: {x: 0, y: 0, z: 0, w: 1}
   isRoot: 0
+  isLinkedCore: 0
   mass: 10
   health: 10
   onDestroy:
@@ -244,6 +247,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: canAttach
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2875339293569051516, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
+      propertyPath: fixedPart
+      value: 
+      objectReference: {fileID: 4629244479564396559}
     - target: {fileID: 8274628161770077805, guid: 672f837fed9162d4a8ad383d78cd987e, type: 3}
       propertyPath: m_Name
       value: Joint

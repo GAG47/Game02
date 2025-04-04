@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
@@ -12,6 +13,8 @@ public class Hitch : Part
     protected override void Awake()
     {
         base.Awake();
+        this.prefabName = "Hitch";
+
         properties.Add(new Property("向左旋转", leftKey));
         properties.Add(new Property("向右旋转", rightKey));
 
@@ -67,7 +70,7 @@ public class Hitch : Part
         }
     }
 
-    public override void AttachToFixed(PartJoint m_joint, PartJoint _joint, bool anotherAttach = true)
+    public override void AttachToFixed(PartJoint m_joint, PartJoint _joint)
     {
         if (_joint == null || m_joint == null) return;
         //设置连核关节
@@ -89,7 +92,7 @@ public class Hitch : Part
                 Transform targetChild = transform.Find("Top");
                 fixedJoint = targetChild.AddComponent<FixedJoint>();
             }
-            fixedJoint.connectedBody = _joint.part.GetComponent<Rigidbody>();
+            fixedJoint.connectedBody = _joint.fixedPart;
             fixedJoint.connectedMassScale = 5.0f;
             fixedJoint.breakForce = 50000.0f;
             fixedJoint.breakTorque = 50000.0f;
@@ -105,10 +108,5 @@ public class Hitch : Part
                 });
             }
         }
-        //增加其他物体物理关节
-        //if (anotherAttach)
-        //{
-        //    _joint.part.AttachToFixed(_joint, m_joint, false);
-        //}
     }
 }

@@ -9,9 +9,12 @@ public class PartJoint : MonoBehaviour
     //包含该关节的零件
     public Part part = null;
 
+    //关节连接的零件物理部分
+    public Rigidbody fixedPart = null;
+
     //连接的关节
     public bool isAttached { get; private set; } = false; //是否连接
-    public bool canAttach { get; private set; } = true; //是否可以发出物理连接
+    public bool canAttach;
     public PartJoint connection { get; private set; } = null; //连接的关节
 
     //基底位置和旋转
@@ -43,7 +46,6 @@ public class PartJoint : MonoBehaviour
             return -1;
         }
     }
-
     private void Update()
     {
         if(coll != null)
